@@ -6,8 +6,9 @@ import './i18n';
 import { I18nextProvider } from 'react-i18next';
 import i18n from './i18n';
 import { ActivityIndicator, View } from 'react-native';
+import { registerRootComponent } from 'expo';
 
-export default function App() {
+function App() {
   const [ready, setReady] = useState(false);
 
   useEffect(() => {
@@ -32,4 +33,6 @@ export default function App() {
       </PaperProvider>
     </I18nextProvider>
   );
-} 
+}
+
+export default registerRootComponent(App); 
