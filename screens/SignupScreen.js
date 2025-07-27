@@ -4,31 +4,43 @@ import { Text, TextInput, Button, Surface, IconButton } from 'react-native-paper
 import { useNavigation } from '@react-navigation/native';
 import supabase from '../supabase/client';
 
-export default function LoginScreen() {
+export default function SignupScreen() {
   const navigation = useNavigation();
-  const [loginMethod, setLoginMethod] = useState('phone'); // 'phone' or 'email'
+  const [signupMethod, setSignupMethod] = useState('phone'); // 'phone' or 'email'
+  const [name, setName] = useState('');
   const [phone, setPhone] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  const [confirmPassword, setConfirmPassword] = useState('');
   const [showPassword, setShowPassword] = useState(false);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
+  const [success, setSuccess] = useState('');
 
-  const handleLogin = async () => {
-    setLoading(true);
+  const handleSignup = async () => {
     setError('');
-    let params = { password };
-    if (loginMethod === 'phone') {
+    setSuccess('');
+    if (password !== confirmPassword) {
+      setError('Passwords do not match');
+      return;
+    }
+    setLoading(true);
+    let params = {
+      password,
+      options: { data: { name } },
+    };
+    if (signupMethod === 'phone') {
       params.phone = phone;
     } else {
       params.email = email;
     }
-    const { error } = await supabase.auth.signInWithPassword(params);
+    const { error } = await supabase.auth.signUp(params);
     setLoading(false);
     if (error) {
       setError(error.message);
     } else {
-      navigation.navigate('Dashboard');
+      setSuccess('Signup successful! Check your ' + (signupMethod === 'phone' ? 'SMS' : 'email') + ' to confirm your account.');
+      setTimeout(() => navigation.navigate('Dashboard'), 1200);
     }
   };
 
@@ -36,25 +48,31 @@ export default function LoginScreen() {
     <View style={styles.bg}>
       <Surface style={styles.card}>
         <IconButton icon="arrow-left" size={24} onPress={() => navigation.goBack()} style={styles.backBtn} />
-        <Text style={styles.headline} variant="headlineMedium">Login to ZivoHub</Text>
-        <Text style={styles.subtext}>Enter your {loginMethod === 'phone' ? 'phone number' : 'email'} and password to continue</Text>
+        <Text style={styles.headline} variant="headlineMedium">Sign Up for ZivoHub</Text>
+        <Text style={styles.subtext}>Create your account to get started</Text>
         <View style={styles.toggleRow}>
           <Button
-            mode={loginMethod === 'phone' ? 'contained' : 'outlined'}
-            onPress={() => setLoginMethod('phone')}
+            mode={signupMethod === 'phone' ? 'contained' : 'outlined'}
+            onPress={() => setSignupMethod('phone')}
             style={styles.toggleBtn}
           >
             Phone
           </Button>
           <Button
-            mode={loginMethod === 'email' ? 'contained' : 'outlined'}
-            onPress={() => setLoginMethod('email')}
+            mode={signupMethod === 'email' ? 'contained' : 'outlined'}
+            onPress={() => setSignupMethod('email')}
             style={styles.toggleBtn}
           >
             Email
           </Button>
         </View>
-        {loginMethod === 'phone' ? (
+        <TextInput
+          label="Name"
+          value={name}
+          onChangeText={setName}
+          style={styles.input}
+        />
+        {signupMethod === 'phone' ? (
           <TextInput
             label="Phone Number"
             value={phone}
@@ -80,24 +98,34 @@ export default function LoginScreen() {
           right={<TextInput.Icon icon={showPassword ? 'eye-off' : 'eye'} onPress={() => setShowPassword(!showPassword)} />}
           style={styles.input}
         />
+        <TextInput
+          label="Confirm Password"
+          value={confirmPassword}
+          onChangeText={setConfirmPassword}
+          secureTextEntry={!showPassword}
+          style={styles.input}
+        />
         {error ? <Text style={styles.error}>{error}</Text> : null}
+        {success ? <Text style={styles.success}>{success}</Text> : null}
         <Button
           mode="contained"
           style={styles.button}
           loading={loading}
-          onPress={handleLogin}
+          onPress={handleSignup}
           disabled={
             loading ||
+            !name ||
             !password ||
-            (loginMethod === 'phone' ? !phone : !email)
+            !confirmPassword ||
+            (signupMethod === 'phone' ? !phone : !email)
           }
         >
-          Login
+          Sign Up
         </Button>
         <View style={styles.signupRow}>
-          <Text>Don't have an account? </Text>
-          <TouchableOpacity onPress={() => navigation.navigate('Signup')}>
-            <Text style={styles.signupLink}>Sign up</Text>
+          <Text>Already have an account? </Text>
+          <TouchableOpacity onPress={() => navigation.navigate('Login')}>
+            <Text style={styles.signupLink}>Login</Text>
           </TouchableOpacity>
         </View>
       </Surface>
@@ -166,6 +194,11 @@ const styles = StyleSheet.create({
   },
   error: {
     color: '#D32F2F',
+    marginBottom: 8,
+    textAlign: 'center',
+  },
+  success: {
+    color: '#388E3C',
     marginBottom: 8,
     textAlign: 'center',
   },
