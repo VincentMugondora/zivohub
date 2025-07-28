@@ -155,18 +155,18 @@ export default function DashboardScreen() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#F5F7FA',
+    backgroundColor: '#1976D2',
   },
   header: {
-    backgroundColor: '#fff',
+    backgroundColor: '#1565C0',
     paddingTop: 50,
     paddingHorizontal: 20,
     paddingBottom: 20,
-    elevation: 4,
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.1,
-    shadowRadius: 4,
+    elevation: 8,
+    shadowColor: '#1976D2',
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.18,
+    shadowRadius: 12,
   },
   headerTop: {
     flexDirection: 'row',
@@ -178,7 +178,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   avatar: {
-    backgroundColor: '#7C5CFA',
+    backgroundColor: '#43A047',
   },
   userText: {
     marginLeft: 12,
@@ -189,35 +189,40 @@ const styles = StyleSheet.create({
   userName: {
     fontSize: 18,
     fontWeight: 'bold',
-    color: '#222B45',
+    color: '#fff',
     maxWidth: 180,
     flexShrink: 1,
   },
   userRole: {
     fontSize: 14,
-    color: '#7A7A9D',
+    color: '#B3E5FC',
   },
   offlineBanner: {
     backgroundColor: '#FF9800',
     padding: 8,
     borderRadius: 8,
     marginTop: 12,
+    alignSelf: 'stretch',
   },
   offlineText: {
-    color: 'white',
+    color: '#fff',
     textAlign: 'center',
     fontWeight: 'bold',
   },
   content: {
     flex: 1,
     padding: 20,
+    backgroundColor: 'transparent',
   },
   welcomeText: {
     fontSize: 20,
     fontWeight: 'bold',
-    color: '#222B45',
+    color: '#fff',
     marginBottom: 24,
     textAlign: 'center',
+    textShadowColor: '#1565C0',
+    textShadowOffset: { width: 0, height: 2 },
+    textShadowRadius: 4,
   },
   cardsContainer: {
     marginBottom: 24,
@@ -225,11 +230,12 @@ const styles = StyleSheet.create({
   card: {
     marginBottom: 16,
     borderRadius: 16,
-    elevation: 2,
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.1,
-    shadowRadius: 4,
+    elevation: 8,
+    backgroundColor: '#fff',
+    shadowColor: '#1976D2',
+    shadowOffset: { width: 0, height: 6 },
+    shadowOpacity: 0.18,
+    shadowRadius: 12,
   },
   cardContent: {
     flexDirection: 'row',
@@ -250,21 +256,29 @@ const styles = StyleSheet.create({
   cardTitle: {
     fontSize: 16,
     fontWeight: 'bold',
-    color: '#222B45',
+    color: '#1976D2',
     marginBottom: 4,
   },
   cardDescription: {
     fontSize: 14,
-    color: '#7A7A9D',
+    color: '#388E3C',
     lineHeight: 20,
   },
   quickActions: {
     marginBottom: 24,
+    backgroundColor: '#fff',
+    borderRadius: 16,
+    padding: 16,
+    elevation: 6,
+    shadowColor: '#1976D2',
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.12,
+    shadowRadius: 8,
   },
   sectionTitle: {
     fontSize: 18,
     fontWeight: 'bold',
-    color: '#222B45',
+    color: '#1976D2',
     marginBottom: 12,
   },
   actionButtons: {
@@ -274,5 +288,9 @@ const styles = StyleSheet.create({
   actionButton: {
     flex: 1,
     marginHorizontal: 4,
+    backgroundColor: '#43A047',
+    borderRadius: 16,
+    borderWidth: 0,
+    color: '#fff',
   },
 }); 

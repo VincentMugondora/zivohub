@@ -25,7 +25,7 @@ export default function WelcomeScreen() {
 
   return (
     <LinearGradient
-      colors={["#2196F3", "#43A047"]}
+      colors={["#1976D2", "#43A047"]}
       style={styles.gradient}
       start={{ x: 0, y: 0 }}
       end={{ x: 1, y: 1 }}
@@ -41,7 +41,7 @@ export default function WelcomeScreen() {
         </Text>
         <Button
           mode="contained"
-          style={[styles.button, { backgroundColor: '#2196F3' }]}
+          style={[styles.button, { backgroundColor: '#1976D2' }]}
           onPress={() => handleRole('student')}
           labelStyle={styles.buttonLabel}
         >
@@ -57,7 +57,7 @@ export default function WelcomeScreen() {
         </Button>
         <Button
           mode="contained"
-          style={[styles.button, { backgroundColor: '#1976D2' }]}
+          style={[styles.button, { backgroundColor: '#00BFAE' }]}
           onPress={() => handleRole('admin')}
           labelStyle={styles.buttonLabel}
         >
@@ -84,7 +84,7 @@ const styles = StyleSheet.create({
     padding: 36,
     borderRadius: 32,
     elevation: 8,
-    backgroundColor: 'rgba(255,255,255,0.97)',
+    backgroundColor: '#fff',
     alignItems: 'center',
     width: '88%',
     shadowColor: '#1976D2',
@@ -107,7 +107,7 @@ const styles = StyleSheet.create({
   },
   subtitle: {
     marginBottom: 32,
-    color: '#388E3C',
+    color: '#43A047',
     textAlign: 'center',
     fontSize: 18,
     fontWeight: '500',
@@ -122,5 +122,22 @@ const styles = StyleSheet.create({
     fontSize: 18,
     fontWeight: 'bold',
     letterSpacing: 1,
+    color: '#fff',
+  },
+  pagination: {
+    flexDirection: 'row',
+    justifyContent: 'center',
+    alignItems: 'center',
+    marginTop: 24,
+  },
+  dot: {
+    width: 10,
+    height: 10,
+    borderRadius: 5,
+    backgroundColor: '#E0E0E0',
+    marginHorizontal: 5,
+  },
+  activeDot: {
+    backgroundColor: '#6C63FF',
   },
 }); 
