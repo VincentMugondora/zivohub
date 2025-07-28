@@ -1,6 +1,6 @@
 import i18n from 'i18next';
 import { initReactI18next } from 'react-i18next';
-import * as RNLocalize from 'react-native-localize';
+import * as Localization from 'expo-localization';
 
 import en from './en.json';
 import sn from './sn.json';
@@ -16,8 +16,9 @@ const languageDetector = {
   type: 'languageDetector',
   async: true,
   detect: (cb) => {
-    const locales = RNLocalize.getLocales();
-    cb(locales && locales.length > 0 ? locales[0].languageCode : 'en');
+    // Use expo-localization to get the device locale
+    const locale = Localization.locale ? Localization.locale.split('-')[0] : 'en';
+    cb(locale);
   },
   init: () => {},
   cacheUserLanguage: () => {},
