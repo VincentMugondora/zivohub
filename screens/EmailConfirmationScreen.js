@@ -71,6 +71,22 @@ export default function EmailConfirmationScreen() {
     return signupMethod === 'phone' ? 'SMS' : 'email';
   };
 
+  const getTitleKey = () => {
+    return signupMethod === 'phone' ? 'check_sms' : 'check_email';
+  };
+
+  const getConfirmedButtonKey = () => {
+    return signupMethod === 'phone' ? 'confirmed_sms' : 'confirmed_email';
+  };
+
+  const getResendButtonKey = () => {
+    return signupMethod === 'phone' ? 'resend_sms' : 'resend_email';
+  };
+
+  const getFooterKey = () => {
+    return signupMethod === 'phone' ? 'sms_footer' : 'email_footer';
+  };
+
   return (
     <View style={styles.container}>
       <Surface style={styles.card}>
@@ -90,21 +106,21 @@ export default function EmailConfirmationScreen() {
           />
         </View>
 
-        <Text style={styles.title}>Check Your {getContactType()}</Text>
+        <Text style={styles.title}>{t(getTitleKey())}</Text>
         <Text style={styles.subtitle}>
-          We've sent a confirmation link to:
+          {t('confirmation_sent')}
         </Text>
         <Text style={styles.email}>{getContactInfo()}</Text>
 
         <View style={styles.instructions}>
           <Text style={styles.instructionText}>
-            • Click the confirmation link in your {getContactType()}
+            {signupMethod === 'phone' ? t('sms_instructions') : t('email_instructions')}
           </Text>
           <Text style={styles.instructionText}>
-            • Check your spam folder if you don't see it
+            {t('spam_check')}
           </Text>
           <Text style={styles.instructionText}>
-            • The link will expire in 24 hours
+            {t('link_expiry')}
           </Text>
         </View>
 
@@ -115,7 +131,7 @@ export default function EmailConfirmationScreen() {
             loading={loading}
             onPress={handleCheckConfirmation}
           >
-            I've Confirmed My {getContactType()}
+            {t(getConfirmedButtonKey())}
           </Button>
 
           <Button
@@ -126,15 +142,15 @@ export default function EmailConfirmationScreen() {
             disabled={countdown > 0 || resendLoading}
           >
             {countdown > 0 
-              ? `Resend in ${countdown}s` 
-              : `Resend ${getContactType()}`
+              ? t('resend_countdown', { seconds: countdown })
+              : t(getResendButtonKey())
             }
           </Button>
         </View>
 
         <View style={styles.footer}>
           <Text style={styles.footerText}>
-            Didn't receive the {getContactType()}? Check your spam folder or try resending.
+            {t(getFooterKey())}
           </Text>
         </View>
       </Surface>
