@@ -49,7 +49,7 @@ export default function EmailConfirmationScreen() {
       
       if (user && user.email_confirmed_at) {
         // User is confirmed, navigate to dashboard
-        navigation.replace('Dashboard');
+        navigation.replace('MainTabs');
       } else {
         // Still not confirmed
         setLoading(false);

@@ -51,7 +51,7 @@ export default function LoginScreen() {
       } else if (data?.user) {
         console.log('Login successful:', data.user);
         // Navigate to dashboard or main app
-        navigation.navigate('Dashboard');
+        navigation.navigate('MainTabs');
       } else {
         setError('Login failed. Please try again.');
       }
