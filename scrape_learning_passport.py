@@ -1,13 +1,10 @@
 import requests
 from bs4 import BeautifulSoup
 import csv
-import os
 import time
-from urllib.parse import urljoin, urlparse
+from urllib.parse import urljoin
 
-BASE_URL = 'https://zimbabwe.learningpassport.org/'
-OUTPUT_CSV = 'learning_passport_resources.csv'
-DOWNLOAD_DIR = 'learning_passport_downloads'
+BASE_URL = 'https://www.zimsake.co.zw/practice-exams'
 HEADERS = {'User-Agent': 'Mozilla/5.0'}
 
 def get_soup(url):
@@ -15,66 +12,51 @@ def get_soup(url):
     resp.raise_for_status()
     return BeautifulSoup(resp.text, 'html.parser')
 
-def is_valid_resource_link(href):
-    # Update this logic based on actual resource URLs
-    return href and ('.pdf' in href or '/resource/' in href or '/books/' in href)
-
-def get_all_resource_links():
+def get_exam_links():
     soup = get_soup(BASE_URL)
-    links = set()
+    links = []
     for a in soup.find_all('a', href=True):
-        href = urljoin(BASE_URL, a['href'])
-        if is_valid_resource_link(href):
-            links.add(href)
-    return list(links)
+        if 'start-exam' in a['href'] or a.text.strip().lower() == 'start exam':
+            full_url = urljoin(BASE_URL, a['href'])
+            links.append(full_url)
+    return list(set(links))  # Remove duplicates
 
-def extract_resource_info(resource_url):
-    soup = get_soup(resource_url)
-    title = soup.title.string.strip() if soup.title else resource_url
-    # Try to find a direct download link (PDF, etc.)
-    download_link = None
+def extract_exam_info(exam_url):
+    soup = get_soup(exam_url)
+    title = soup.find('h1') or soup.find('h2') or soup.title
+    title = title.text.strip() if title else exam_url
+    # You can add more parsing here for marks, duration, etc.
+    # If there is a PDF or download link, find it:
+    pdf_link = None
     for a in soup.find_all('a', href=True):
         if '.pdf' in a['href']:
-            download_link = urljoin(resource_url, a['href'])
+            pdf_link = urljoin(exam_url, a['href'])
             break
     return {
         'title': title,
-        'page_url': resource_url,
-        'download_url': download_link
+        'exam_url': exam_url,
+        'pdf_link': pdf_link
     }
 
-def download_file(url, out_dir):
-    local_filename = os.path.join(out_dir, os.path.basename(urlparse(url).path))
-    with requests.get(url, headers=HEADERS, stream=True) as r:
-        r.raise_for_status()
-        with open(local_filename, 'wb') as f:
-            for chunk in r.iter_content(chunk_size=8192):
-                f.write(chunk)
-    return local_filename
-
 def main():
-    os.makedirs(DOWNLOAD_DIR, exist_ok=True)
-    all_links = get_all_resource_links()
-    print(f'Found {len(all_links)} resource pages.')
-    resources = []
-    for idx, link in enumerate(all_links):
-        print(f'[{idx+1}/{len(all_links)}] Scraping: {link}')
+    exam_links = get_exam_links()
+    print(f'Found {len(exam_links)} exams.')
+    exams = []
+    for idx, link in enumerate(exam_links):
+        print(f'[{idx+1}/{len(exam_links)}] Scraping: {link}')
         try:
-            info = extract_resource_info(link)
-            resources.append(info)
-            if info['download_url']:
-                print(f'  Downloading: {info["download_url"]}')
-                download_file(info['download_url'], DOWNLOAD_DIR)
-            time.sleep(1)  # Be polite!
+            info = extract_exam_info(link)
+            exams.append(info)
+            time.sleep(1)
         except Exception as e:
             print(f'  Error: {e}')
-    # Save metadata to CSV
-    with open(OUTPUT_CSV, 'w', newline='', encoding='utf-8') as csvfile:
-        writer = csv.DictWriter(csvfile, fieldnames=['title', 'page_url', 'download_url'])
+    # Save to CSV
+    with open('zimsake_exams.csv', 'w', newline='', encoding='utf-8') as csvfile:
+        writer = csv.DictWriter(csvfile, fieldnames=['title', 'exam_url', 'pdf_link'])
         writer.writeheader()
-        for res in resources:
-            writer.writerow(res)
-    print(f'Done! Metadata saved to {OUTPUT_CSV}, files in {DOWNLOAD_DIR}/')
+        for exam in exams:
+            writer.writerow(exam)
+    print('Done! Metadata saved to zimsake_exams.csv')
 
 if __name__ == '__main__':
     main()
