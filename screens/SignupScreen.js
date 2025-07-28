@@ -67,24 +67,18 @@ export default function SignupScreen() {
       }
 
       const { data, error: signupError } = await supabase.auth.signUp(params);
+      console.log('Supabase signup response:', data, signupError);
       
       if (signupError) {
         console.error('Signup error:', signupError);
         setError(signupError.message || 'Signup failed. Please try again.');
-      } else if (data?.user) {
-        console.log('Signup successful:', data.user);
-        setSuccess('Account created successfully!');
-        
-        // Navigate to email confirmation screen
-        setTimeout(() => {
-          navigation.navigate('EmailConfirmation', {
-            email: email.trim(),
-            phone: phone.trim(),
-            signupMethod: signupMethod
-          });
-        }, 1000);
       } else {
-        setError('Signup failed. Please try again.');
+        setSuccess('Account created successfully!');
+        navigation.navigate('EmailConfirmation', {
+          email: email.trim(),
+          phone: phone.trim(),
+          signupMethod: signupMethod
+        });
       }
     } catch (err) {
       console.error('Signup error:', err);

@@ -79,10 +79,12 @@ export default function DashboardScreen() {
               style={styles.avatar}
             />
             <View style={styles.userText}>
-              <Text style={styles.userName}>
+              <Text style={styles.userName} numberOfLines={1} ellipsizeMode="tail" adjustsFontSizeToFit minimumFontScale={0.7}>
                 {user?.user_metadata?.name || user?.email || 'User'}
               </Text>
-              <Text style={styles.userRole}>Student</Text>
+              <Text style={styles.userRole} numberOfLines={1} ellipsizeMode="tail">
+                Student
+              </Text>
             </View>
           </View>
           <LanguageToggle />
@@ -180,11 +182,16 @@ const styles = StyleSheet.create({
   },
   userText: {
     marginLeft: 12,
+    flexShrink: 1,
+    minWidth: 0,
+    maxWidth: 180,
   },
   userName: {
     fontSize: 18,
     fontWeight: 'bold',
     color: '#222B45',
+    maxWidth: 180,
+    flexShrink: 1,
   },
   userRole: {
     fontSize: 14,
