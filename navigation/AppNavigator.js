@@ -13,6 +13,7 @@ import LessonsScreen from '../screens/LessonsScreen';
 import HomeworkScreen from '../screens/HomeworkScreen';
 import TutoringSessionScreen from '../screens/TutoringSessionScreen';
 import HomeworkHelpScreen from '../screens/HomeworkHelpScreen';
+import EnrollCourseScreen from '../screens/EnrollCourseScreen';
 
 const Stack = createNativeStackNavigator();
 const Tab = createBottomTabNavigator();
@@ -55,6 +56,7 @@ export default function AppNavigator() {
       <Stack.Screen name="Signup" component={SignupScreen} />
       <Stack.Screen name="EmailConfirmation" component={EmailConfirmationScreen} />
       <Stack.Screen name="MainTabs" component={MainTabs} />
+      <Stack.Screen name="EnrollCourse" component={EnrollCourseScreen} />
       <Stack.Screen name="TutoringSession" component={TutoringSessionScreen} />
     </Stack.Navigator>
   );
