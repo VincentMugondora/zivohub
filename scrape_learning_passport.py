@@ -63,7 +63,7 @@ def main():
             info = extract_resource_info(link)
             resources.append(info)
             if info['download_url']:
-                print(f'  Downloading: {info[\"download_url\"]}')
+                print(f'  Downloading: {info["download_url"]}')
                 download_file(info['download_url'], DOWNLOAD_DIR)
             time.sleep(1)  # Be polite!
         except Exception as e:
