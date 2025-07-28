@@ -22,5 +22,17 @@
   "language": "Language",
   "english": "English",
   "shona": "Shona",
-  "ndebele": "Ndebele"
+  "ndebele": "Ndebele",
+  "schedule_session": "Schedule Session",
+  "messages": "Messages",
+  "continue_learning": "Continue your learning journey",
+  "enroll_course": "Enroll in New Course",
+  "track_assignments": "Track your assignments and submissions",
+  "create_assignment": "Create New Assignment",
+  "submit": "Submit",
+  "view_details": "View Details",
+  "pending": "Pending",
+  "submitted": "Submitted",
+  "overdue": "Overdue",
+  "all": "All"
 } 

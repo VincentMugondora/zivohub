@@ -5,7 +5,10 @@ import OnboardingWelcomeScreen from '../screens/OnboardingWelcomeScreen';
 import WelcomeScreen from '../screens/WelcomeScreen';
 import LoginScreen from '../screens/LoginScreen';
 import SignupScreen from '../screens/SignupScreen';
+import EmailConfirmationScreen from '../screens/EmailConfirmationScreen';
 import DashboardScreen from '../screens/DashboardScreen';
+import LessonsScreen from '../screens/LessonsScreen';
+import HomeworkScreen from '../screens/HomeworkScreen';
 import TutoringSessionScreen from '../screens/TutoringSessionScreen';
 import HomeworkHelpScreen from '../screens/HomeworkHelpScreen';
 
@@ -18,7 +21,10 @@ export default function AppNavigator() {
       <Stack.Screen name="Welcome" component={WelcomeScreen} />
       <Stack.Screen name="Login" component={LoginScreen} />
       <Stack.Screen name="Signup" component={SignupScreen} />
+      <Stack.Screen name="EmailConfirmation" component={EmailConfirmationScreen} />
       <Stack.Screen name="Dashboard" component={DashboardScreen} />
+      <Stack.Screen name="Lessons" component={LessonsScreen} />
+      <Stack.Screen name="Homework" component={HomeworkScreen} />
       <Stack.Screen name="TutoringSession" component={TutoringSessionScreen} />
       <Stack.Screen name="HomeworkHelp" component={HomeworkHelpScreen} />
     </Stack.Navigator>

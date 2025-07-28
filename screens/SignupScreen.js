@@ -20,27 +20,77 @@ export default function SignupScreen() {
   const handleSignup = async () => {
     setError('');
     setSuccess('');
-    if (password !== confirmPassword) {
-      setError('Passwords do not match');
-      return;
-    }
-    setLoading(true);
-    let params = {
-      password,
-      options: { data: { name } },
-    };
-    if (signupMethod === 'phone') {
-      params.phone = phone;
-    } else {
-      params.email = email;
-    }
-    const { error } = await supabase.auth.signUp(params);
-    setLoading(false);
-    if (error) {
-      setError(error.message);
-    } else {
-      setSuccess('Signup successful! Check your ' + (signupMethod === 'phone' ? 'SMS' : 'email') + ' to confirm your account.');
-      setTimeout(() => navigation.navigate('Dashboard'), 1200);
+    
+    try {
+      // Validation
+      if (!name.trim()) {
+        setError('Please enter your name');
+        return;
+      }
+      
+      if (password !== confirmPassword) {
+        setError('Passwords do not match');
+        return;
+      }
+      
+      if (password.length < 6) {
+        setError('Password must be at least 6 characters long');
+        return;
+      }
+
+      setLoading(true);
+      
+      let params = {
+        password: password.trim(),
+        options: { 
+          data: { 
+            name: name.trim(),
+            role: 'student' // Default role
+          } 
+        },
+      };
+      
+      if (signupMethod === 'phone') {
+        if (!phone.trim()) {
+          setError('Please enter a phone number');
+          setLoading(false);
+          return;
+        }
+        params.phone = phone.trim();
+      } else {
+        if (!email.trim()) {
+          setError('Please enter an email address');
+          setLoading(false);
+          return;
+        }
+        params.email = email.trim();
+      }
+
+      const { data, error: signupError } = await supabase.auth.signUp(params);
+      
+      if (signupError) {
+        console.error('Signup error:', signupError);
+        setError(signupError.message || 'Signup failed. Please try again.');
+      } else if (data?.user) {
+        console.log('Signup successful:', data.user);
+        setSuccess('Account created successfully!');
+        
+        // Navigate to email confirmation screen
+        setTimeout(() => {
+          navigation.navigate('EmailConfirmation', {
+            email: email.trim(),
+            phone: phone.trim(),
+            signupMethod: signupMethod
+          });
+        }, 1000);
+      } else {
+        setError('Signup failed. Please try again.');
+      }
+    } catch (err) {
+      console.error('Signup error:', err);
+      setError('Network error. Please check your connection and try again.');
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -71,6 +121,7 @@ export default function SignupScreen() {
           value={name}
           onChangeText={setName}
           style={styles.input}
+          placeholder="Enter your full name"
         />
         {signupMethod === 'phone' ? (
           <TextInput
@@ -79,6 +130,7 @@ export default function SignupScreen() {
             onChangeText={setPhone}
             keyboardType="phone-pad"
             style={styles.input}
+            placeholder="+263 7X XXX XXXX"
           />
         ) : (
           <TextInput
@@ -88,6 +140,7 @@ export default function SignupScreen() {
             autoCapitalize="none"
             keyboardType="email-address"
             style={styles.input}
+            placeholder="your.email@example.com"
           />
         )}
         <TextInput
@@ -97,6 +150,7 @@ export default function SignupScreen() {
           secureTextEntry={!showPassword}
           right={<TextInput.Icon icon={showPassword ? 'eye-off' : 'eye'} onPress={() => setShowPassword(!showPassword)} />}
           style={styles.input}
+          placeholder="Enter your password"
         />
         <TextInput
           label="Confirm Password"
@@ -104,6 +158,7 @@ export default function SignupScreen() {
           onChangeText={setConfirmPassword}
           secureTextEntry={!showPassword}
           style={styles.input}
+          placeholder="Confirm your password"
         />
         {error ? <Text style={styles.error}>{error}</Text> : null}
         {success ? <Text style={styles.success}>{success}</Text> : null}
@@ -114,10 +169,10 @@ export default function SignupScreen() {
           onPress={handleSignup}
           disabled={
             loading ||
-            !name ||
-            !password ||
-            !confirmPassword ||
-            (signupMethod === 'phone' ? !phone : !email)
+            !name.trim() ||
+            !password.trim() ||
+            !confirmPassword.trim() ||
+            (signupMethod === 'phone' ? !phone.trim() : !email.trim())
           }
         >
           Sign Up

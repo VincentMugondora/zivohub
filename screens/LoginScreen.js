@@ -17,18 +17,49 @@ export default function LoginScreen() {
   const handleLogin = async () => {
     setLoading(true);
     setError('');
-    let params = { password };
-    if (loginMethod === 'phone') {
-      params.phone = phone;
-    } else {
-      params.email = email;
-    }
-    const { error } = await supabase.auth.signInWithPassword(params);
-    setLoading(false);
-    if (error) {
-      setError(error.message);
-    } else {
-      navigation.navigate('Dashboard');
+    
+    try {
+      let params = { password };
+      
+      if (loginMethod === 'phone') {
+        if (!phone.trim()) {
+          setError('Please enter a phone number');
+          setLoading(false);
+          return;
+        }
+        params.phone = phone.trim();
+      } else {
+        if (!email.trim()) {
+          setError('Please enter an email address');
+          setLoading(false);
+          return;
+        }
+        params.email = email.trim();
+      }
+
+      if (!password.trim()) {
+        setError('Please enter a password');
+        setLoading(false);
+        return;
+      }
+
+      const { data, error: authError } = await supabase.auth.signInWithPassword(params);
+      
+      if (authError) {
+        console.error('Auth error:', authError);
+        setError(authError.message || 'Login failed. Please check your credentials.');
+      } else if (data?.user) {
+        console.log('Login successful:', data.user);
+        // Navigate to dashboard or main app
+        navigation.navigate('Dashboard');
+      } else {
+        setError('Login failed. Please try again.');
+      }
+    } catch (err) {
+      console.error('Login error:', err);
+      setError('Network error. Please check your connection and try again.');
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -61,6 +92,7 @@ export default function LoginScreen() {
             onChangeText={setPhone}
             keyboardType="phone-pad"
             style={styles.input}
+            placeholder="+263 7X XXX XXXX"
           />
         ) : (
           <TextInput
@@ -70,6 +102,7 @@ export default function LoginScreen() {
             autoCapitalize="none"
             keyboardType="email-address"
             style={styles.input}
+            placeholder="your.email@example.com"
           />
         )}
         <TextInput
@@ -79,6 +112,7 @@ export default function LoginScreen() {
           secureTextEntry={!showPassword}
           right={<TextInput.Icon icon={showPassword ? 'eye-off' : 'eye'} onPress={() => setShowPassword(!showPassword)} />}
           style={styles.input}
+          placeholder="Enter your password"
         />
         {error ? <Text style={styles.error}>{error}</Text> : null}
         <Button
@@ -88,8 +122,8 @@ export default function LoginScreen() {
           onPress={handleLogin}
           disabled={
             loading ||
-            !password ||
-            (loginMethod === 'phone' ? !phone : !email)
+            !password.trim() ||
+            (loginMethod === 'phone' ? !phone.trim() : !email.trim())
           }
         >
           Login
